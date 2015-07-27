@@ -12,3 +12,9 @@ $ pip install pygrok
 $ cd static
 $ bower install flat-ui 
 ```
+
+Start:
+
+```
+$ py app.py
+```
