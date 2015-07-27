@@ -1,0 +1,295 @@
+<html>
+	<head>
+<!-- 		<script src="http://rubaxa.github.io/Sortable/Sortable.js"></script> -->
+		<script src="static/js/Sortable.js"></script>
+    <!-- Loading Bootstrap -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+
+    <!-- Loading Flat UI -->
+    <link href="static/bower_components/flat-ui/dist/css/flat-ui.css" rel="stylesheet">
+
+    <link rel="shortcut icon" href="static/bower_components/flat-ui/dist/img/favicon.ico">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements. All other JS at the end of file. -->
+    <!--[if lt IE 9]>
+      <script src="static/bower_components/flat-ui/dist/js/vendor/html5shiv.js"></script>
+      <script src="static/bower_components/flat-ui/dist/js/vendor/respond.min.js"></script>
+    <![endif]-->
+
+	</head>
+	<body onLoad="addField()">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2>Specifiy Your Log Format</h2>
+                </div>
+            </div>
+            
+            <hr>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                      <div class="panel-heading">At least 100 lines of logs in produciton</div>
+                          <div class="panel-body">
+                              <textarea id="log_examples" class="form-control" rows="5"></textarea>
+                          </div>
+                      </div>
+                </div>
+            </div>
+            
+            <hr>
+            
+            <div class="row">
+                <div id="simpleDiv"></div>
+            </div>
+            
+            <hr>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div id="log_line" class="panel-body">
+                            Click Generate Button, Your Log Format will show here.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            
+            <div class="row">
+                <div class="col-md-2">
+                    <button class="btn btn-primary" onClick="addFieldPlaceholder()">Add Field</button>
+                </div>
+                <div class="col-md-2">
+                    <button class="btn btn-primary" onClick="generate()">Generate</button>
+                </div>
+                
+                <div class="col-md-2">
+                    <button class="btn btn-primary" onClick="parserLog()">Parse Your Log</button>
+                </div>
+            </div>
+            
+            <hr>
+            
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">Parsed Log</div>
+                        <div class="panel-body">
+                            <pre id="parsed_log">
+                                {
+                                    "k1":"v1",
+                                    "k2": 3,
+                                    "k3": [
+                                        "v4","v5"
+                                    ]
+                                }
+                            </pre>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            
+        </div>
+
+		<script type="text/javascript">
+			Sortable.create(simpleDiv, { /* options */ });
+		</script>
+        <script type="text/javascript">
+		    // add field button
+            // http://stackoverflow.com/questions/5677799/how-to-append-data-to-div-using-javascript
+    
+            var placeholder_innerHTML = '<div class="col-md-1">Seq</div> \
+                                   <div class="col-md-2"> \
+                                       <input type="text" placeholder="Placeholder" class="log-format-element-name form-control" /> \
+                               </div>'
+                               
+            var field_innerHTML = '<div class="col-md-1">Seq</div> \
+                <div class="col-md-2"><input type="text" placeholder="Field Name in English" class="log-format-element-name form-control" /></div> \
+                <div class="col-md-2"> \
+                    <select class="form-control select select-primary select-block mbl log-format-element-field-type"> \
+                        <optgroup label="String"> \
+                            <option value="0">String</option> \
+                            <option value="1">Host</option> \
+                            <option value="2">IP</option> \
+                            <option value="3">URL</option> \
+                            <option value="4">Quote String</option> \
+                            <option value="5">UUID</option> \
+                            <option value="6">Log Level</option> \
+                            <option value="7">Unix Path</option> \
+                        </optgroup> \
+                        <optgroup label="Json"> \
+                            <option value="8">json</option> \
+                        </optgroup> \
+                        <optgroup label="Number"> \
+                            <option value="9">Integer/Long</option> \
+                            <option value="10">Float/Double</option> \
+                            <option value="11">Integer/Long OR Float/Double</option> \
+                        </optgroup> \
+                        <optgroup label="Date"> \
+                            <option value="12">ISO8601</option> \
+                            <option value="13">HTTPDATE</option> \
+                            <option value="14">custom</option> \
+                        </optgroup> \
+                        <optgroup label="Placeholder"> \
+                            <option value="15">whitespace</option> \
+                            <option value="16">:</option> \
+                            <option value="17">-</option> \
+                            <option value="18">/</option> \
+                            <option value="19">custom</option> \
+                        </optgroup> \
+                    </select> \
+                </div> \
+                <div class="col-md-3"><input type="text" placeholder="Example 1" class="form-control log-format-element-field-example1" /></div> \
+                <div class="col-md-3"><input type="text" placeholder="Example 2" class="form-control log-format-element-field-example2" /></div>'
+                
+            function addField() {
+                // TODO: jquery vs backbone.js vs ember.js vs AngularJS 
+                var div = document.querySelector("#simpleDiv")
+
+                // add new field
+                var field = document.createElement("div")
+                field.setAttribute("class", "row log-format-element log-format-element-field")
+                field.innerHTML = field_innerHTML
+                div.appendChild(field)
+            }
+            
+            function addPlaceholder() {
+                
+                var div = document.getElementById("simpleDiv")
+
+                var placeholder = document.createElement("div")
+                placeholder.setAttribute("class", "row log-format-element log-format-element-placeholder")
+                placeholder.innerHTML = placeholder_innerHTML
+                // TODO: appendChild will keep user data but div.innerHTML += will lose user data
+                // http://stackoverflow.com/questions/595808/is-it-possible-to-append-to-innerhtml-without-destroying-descendants-onclick-fu
+                div.appendChild(placeholder)
+            }
+            
+            function addFieldPlaceholder() {
+                addPlaceholder()
+                addField()
+            }
+            
+            function generate() {
+                var div = document.getElementById("simpleDiv")
+                
+                var log_line = document.getElementById("log_line")
+                // remove all children
+                while (log_line.hasChildNodes()) {
+                    log_line.removeChild(log_line.lastChild)
+                }
+                 
+                var elems = document.querySelectorAll(".log-format-element-name")
+                
+                for (var i = 0; i < elems.length; ++ i) {
+
+                    content = document.createTextNode( elems[i].value )
+                    
+                    elemContainer = document.createElement( "span" ) 
+                    elemContainer.setAttribute( "class", "label label-success" )
+                    elemContainer.appendChild( content )
+                    log_line.appendChild( elemContainer )
+                    
+                    // add a whitespace
+                    log_line.appendChild( document.createTextNode( " " ) )
+                }
+            }
+            
+            function getLogExamples() {
+                var log_examples = document.getElementById( "log_examples" )
+                console.log( log_examples.value )
+                return log_examples.value
+            }
+            
+            function getLogFormat() {
+                // log format in json
+                /*
+                {
+                    "api_version": "0.1.0"
+                    "log_format" : {
+                        "1" : {
+                            "type": "field",
+                            "name": "uid",
+                            "field_type": "string",
+                            "pos": 1
+                        },
+                        "2": {
+                            "type": "placeholder",
+                            "name": "@",
+                            "pos": 2
+                        },
+                        "3" : {
+                            "type": "field",
+                            "name": "url",
+                            "field_type": "string",
+                            "pos": 3
+                        }
+                    }
+                }
+                */
+                var elems = document.querySelectorAll( ".log-format-element" )
+                
+                var logFormatElems = {}
+                
+                for ( var i = 0; i < elems.length; ++i ) {
+                    
+                    var e = {}
+
+                    e[ "name" ] = elems[ i ].querySelector( ".log-format-element-name" ).value
+                    e[ "pos" ] = i + 1
+                    
+                    if ( elems[ i ].classList.contains( "log-format-element-field" ) ) {
+                        e[ "type" ] = "field"
+                    }
+                    else if ( elems[ i ].classList.contains( "log-format-element-placeholder" ) ) {
+                        e[ "type" ] = "placeholder"
+                    }
+
+                    if ( e[ "type" ] == "field" ) {
+                        // field type 
+                        var fieldType = elems[ i ].querySelector( ".log-format-element-field-type" )
+                        e[ "field_type" ] = fieldType.options[ fieldType.selectedIndex ].text
+                        
+                        e[ "example1" ] = elems[ i ].querySelector( ".log-format-element-field-example1" ).value
+                        e[ "example2" ] = elems[ i ].querySelector( ".log-format-element-field-example2" ).value
+                    }
+                    
+                    logFormatElems[ e[ "pos" ] ] = e
+                }
+                
+                return logFormatElems
+            }
+            
+            function parserLog() {
+                // get "log examples" and "log format", then send ajax request
+                log_examples = getLogExamples()
+                log_format = getLogFormat()
+                
+                console.log( "log format:" + JSON.stringify( log_format ) )
+                
+                var parsed_log = document.getElementById( "parsed_log" )
+                
+                // remove all children
+                while (parsed_log.hasChildNodes()) {
+                    parsed_log.removeChild(parsed_log.lastChild)
+                }
+                
+                logExamplesText = document.createTextNode( log_examples )
+                parsed_log.appendChild( logExamplesText )
+                
+                // TODO send ajax request
+                
+            }
+            
+		</script>
+        
+    <script src="static/bower_components/flat-ui/dist/js/vendor/jquery.min.js"></script>
+    <script src="static/bower_components/flat-ui/dist/js/flat-ui.min.js"></script>
+	</body>
+</html>

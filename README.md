@@ -1,2 +1,14 @@
-# dolphin
-dolphin is a project that helps log format communication
+
+Installation
+
+```
+# flask
+$ pip install flask
+
+# pygrok
+$ pip install pygrok
+
+# flat-ui
+$ cd static
+$ bower install flat-ui 
+```
