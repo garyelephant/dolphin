@@ -289,7 +289,42 @@
                 
                 console.log( "data:" + JSON.stringify( data ) )
                 
-                // TODO send ajax request   
+                $.ajax({
+
+                    // The URL for the request
+                    url: "parse_log",
+
+                    // The data to send (will be converted to a query string)
+                    data: JSON.stringify( data ),
+
+                    // Whether this is a POST or GET request
+                    type: "POST",
+
+                    // The type of data we expect back
+                    dataType : "json",
+
+                    // Code to run if the request succeeds;
+                    // the response is passed to the function
+                    success: function( json ) {
+                        var parsed_log = document.querySelector( "#parsed_log" )
+                        // remove all children
+                        while ( parsed_log.hasChildNodes() ) {
+                            parsed_log.removeChild( parsed_log.lastChild )
+                        }
+
+                        var text = document.createTextNode( JSON.stringify( json ) )
+                        parsed_log.appendChild( text )
+                    },
+
+                    // Code to run if the request fails; the raw request and
+                    // status codes are passed to the function
+                    error: function( xhr, status, errorThrown ) {
+                        alert( "Sorry, there was a problem!" );
+                        console.log( "Error: " + errorThrown );
+                        console.log( "Status: " + status );
+                        console.dir( xhr );
+                    }
+                });
             }
             
 		</script>
