@@ -189,9 +189,9 @@
                 
                 for (var i = 0; i < elems.length; ++ i) {
 
-                    content = document.createTextNode( elems[i].value )
+                    var content = document.createTextNode( elems[i].value )
                     
-                    elemContainer = document.createElement( "span" ) 
+                    var elemContainer = document.createElement( "span" ) 
                     elemContainer.setAttribute( "class", "label label-success" )
                     elemContainer.appendChild( content )
                     log_line.appendChild( elemContainer )
@@ -203,7 +203,6 @@
             
             function getLogExamples() {
                 var log_examples = document.getElementById( "log_examples" )
-                console.log( log_examples.value )
                 return log_examples.value
             }
             
@@ -268,8 +267,8 @@
             
             function parserLog() {
                 // get "log examples" and "log format", then send ajax request
-                log_examples = getLogExamples()
-                log_format = getLogFormat()
+                var log_examples = getLogExamples()
+                var log_format = getLogFormat()
                 
                 console.log( "log format:" + JSON.stringify( log_format ) )
                 
@@ -280,11 +279,17 @@
                     parsed_log.removeChild(parsed_log.lastChild)
                 }
                 
-                logExamplesText = document.createTextNode( log_examples )
+                var logExamplesText = document.createTextNode( log_examples )
                 parsed_log.appendChild( logExamplesText )
                 
-                // TODO send ajax request
+                var data = {
+                    "log_examples": log_examples,
+                    "log_format" : log_format
+                }
                 
+                console.log( "data:" + JSON.stringify( data ) )
+                
+                // TODO send ajax request   
             }
             
 		</script>
