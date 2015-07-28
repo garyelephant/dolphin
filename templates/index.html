@@ -79,15 +79,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">Parsed Log</div>
                         <div class="panel-body">
-                            <pre id="parsed_log">
-                                {
-                                    "k1":"v1",
-                                    "k2": 3,
-                                    "k3": [
-                                        "v4","v5"
-                                    ]
-                                }
-                            </pre>
+                            <pre id="parsed_log"></pre>
                         </div>
                     </div>
                 </div>
@@ -115,21 +107,28 @@
                     <select class="form-control select select-primary select-block mbl log-format-element-field-type"> \
                         <optgroup label="String"> \
                             <option value="0">String</option> \
-                            <option value="1">Host</option> \
-                            <option value="2">IP</option> \
-                            <option value="3">URL</option> \
                             <option value="4">Quote String</option> \
                             <option value="5">UUID</option> \
                             <option value="6">Log Level</option> \
+                        </optgroup> \
+                        <optgroup label="Networking"> \
+                            <option value="2">IP</option> \
+                            <option value="1">Host/Domain</option> \
+                            <option value="1">Host:Port</option> \
+                            <option value="1">IP or Host/Domain</option> \
+                        </optgroup> \
+                        <optgroup label="Path"> \
+                            <option value="3">Full URL</option> \
+                            <option value="3">Url Path</option> \
                             <option value="7">Unix Path</option> \
                         </optgroup> \
                         <optgroup label="Json"> \
                             <option value="8">json</option> \
                         </optgroup> \
                         <optgroup label="Number"> \
+                            <option value="11">Number</option> \
                             <option value="9">Integer/Long</option> \
                             <option value="10">Float/Double</option> \
-                            <option value="11">Integer/Long OR Float/Double</option> \
                         </optgroup> \
                         <optgroup label="Date"> \
                             <option value="12">ISO8601</option> \
@@ -210,8 +209,6 @@
                 // log format in json
                 /*
                 {
-                    "api_version": "0.1.0"
-                    "log_format" : {
                         "1" : {
                             "type": "field",
                             "name": "uid",
@@ -229,7 +226,6 @@
                             "field_type": "string",
                             "pos": 3
                         }
-                    }
                 }
                 */
                 var elems = document.querySelectorAll( ".log-format-element" )
@@ -312,7 +308,7 @@
                             parsed_log.removeChild( parsed_log.lastChild )
                         }
 
-                        var text = document.createTextNode( JSON.stringify( json ) )
+                        var text = document.createTextNode( JSON.stringify( json[ 'parsed_logs' ] ) )
                         parsed_log.appendChild( text )
                     },
 
