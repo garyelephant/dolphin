@@ -57,6 +57,8 @@ def build_grok_pattern( log_format ):
             app.logger.error( "unexpected log format element type(%s) in %s", str( ele[ 'type' ] ), json.dumps( ele ) )
             # TODO return exception in response
 
+    pat += '$'
+
     return pat
 
 @app.route("/sortable_example")

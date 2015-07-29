@@ -8,6 +8,9 @@
 
     <!-- Loading Flat UI -->
     <link href="static/bower_components/flat-ui/dist/css/flat-ui.css" rel="stylesheet">
+        
+    <!-- code highlighting -->
+    <link rel="stylesheet" href="static/js/highlight_code/default.min.css">
 
     <link rel="shortcut icon" href="static/bower_components/flat-ui/dist/img/favicon.ico">
 
@@ -79,7 +82,7 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">Parsed Log</div>
                         <div class="panel-body">
-                            <pre id="parsed_log"></pre>
+                            <pre><code id="parsed_log"></code></pre>
                         </div>
                     </div>
                 </div>
@@ -92,6 +95,7 @@
 		<script type="text/javascript">
 			Sortable.create(simpleDiv, { /* options */ });
 		</script>
+
         <script type="text/javascript">
 		    // add field button
             // http://stackoverflow.com/questions/5677799/how-to-append-data-to-div-using-javascript
@@ -308,8 +312,14 @@
                             parsed_log.removeChild( parsed_log.lastChild )
                         }
 
-                        var text = document.createTextNode( JSON.stringify( json[ 'parsed_logs' ] ) )
+                        // pretty print json
+                        var text = document.createTextNode( JSON.stringify( json[ 'parsed_logs' ], null, 2 ) )
                         parsed_log.appendChild( text )
+
+                        // initialize code highlighting
+                        $('pre code').each( function( i, block ) {
+                            hljs.highlightBlock( block )
+                        })
                     },
 
                     // Code to run if the request fails; the raw request and
@@ -325,7 +335,9 @@
             
 		</script>
         
-    <script src="static/bower_components/flat-ui/dist/js/vendor/jquery.min.js"></script>
-    <script src="static/bower_components/flat-ui/dist/js/flat-ui.min.js"></script>
+        <script src="static/bower_components/flat-ui/dist/js/vendor/jquery.min.js"></script>
+        <script src="static/bower_components/flat-ui/dist/js/flat-ui.min.js"></script>
+        <!-- code highlighting -->
+        <script src="static/js/highlight_code/highlight.min.js"></script>
 	</body>
 </html>
