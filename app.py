@@ -1,3 +1,4 @@
+# coding:utf-8
 from flask import Flask,request
 from flask import render_template
 
@@ -34,8 +35,48 @@ def parse_log():
 
     data = { 'parsed_logs': pls }
 
+    ls_conf = build_logstash_conf( form[ 'log_format' ] )
+    app.logger.warning( 'ls_conf:%s', ls_conf )
+
     return json.dumps( data )
 
+def build_logstash_conf( log_format ):
+    from logstash_conf_api import LogstashConf, Plugin, If, Else, _quote
+    conf = LogstashConf()
+
+    grok_pat = build_grok_pattern( log_format )
+    grok = { 'match': { _quote( 'message' ): [ grok_pat ] } }
+    conf.filter( Plugin( 'grok', **grok ) )
+
+    # TODO refine log format definition
+
+    # 类型转换 logstash-filter-mutate
+
+    # string to json logstash-filter-josn
+
+    # 时间戳: logstash-filter-date
+
+    # geoip: logstash-filter-geoip2
+
+#     if [tags] {
+#         if ( "_grokparsefailure" not in [tags] ) and ( "_jsonparsefailure" not in [tags] ) {
+#             mutate {
+#                 remove_field => [ "message" ]
+#             }
+#         }
+#     }
+#     else {
+#         mutate {
+#             remove_field => [ "message" ]
+#         }
+#     }
+    remove_message = Plugin( 'mutate', **{ 'remove_field': [ 'message' ] } )
+    if_not_failure = If( '( "_grokparsefailure" not in [tags] ) and ( "_jsonparsefailure" not in [tags] )', remove_message )
+    if_blk = If( '[tags]', if_not_failure )
+    else_blk = Else( remove_message )
+    conf.filter( if_blk, else_blk )
+
+    return conf.dumps( pretty=True )
 
 def build_grok_pattern( log_format ):
     from string import Template
@@ -60,6 +101,7 @@ def build_grok_pattern( log_format ):
     pat += '$'
 
     return pat
+
 
 @app.route("/sortable_example")
 def sortable_example():
