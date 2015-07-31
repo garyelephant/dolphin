@@ -147,9 +147,7 @@
                             <option value="19">custom</option> \
                         </optgroup> \
                     </select> \
-                </div> \
-                <div class="col-md-3"><input type="text" placeholder="Example 1" class="form-control log-format-element-field-example1" /></div> \
-                <div class="col-md-3"><input type="text" placeholder="Example 2" class="form-control log-format-element-field-example2" /></div>'
+                </div>'
                 
             function addField() {
                 // TODO: jquery vs backbone.js vs ember.js vs AngularJS 
@@ -254,9 +252,6 @@
                         // field type 
                         var fieldType = elems[ i ].querySelector( ".log-format-element-field-type" )
                         e[ "field_type" ] = fieldType.options[ fieldType.selectedIndex ].text
-                        
-                        e[ "example1" ] = elems[ i ].querySelector( ".log-format-element-field-example1" ).value
-                        e[ "example2" ] = elems[ i ].querySelector( ".log-format-element-field-example2" ).value
                     }
                     
                     logFormatElems[ e[ "pos" ] ] = e
